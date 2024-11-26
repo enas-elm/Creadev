@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import { Bodies, Body } from 'matter-js'
 
-export default 
-class Wall extends THREE.Mesh {
+export default
+    class Wall extends THREE.Mesh {
     #width
     #height
 
@@ -11,7 +11,7 @@ class Wall extends THREE.Mesh {
         const geometry_ = new THREE.BoxGeometry(1, 1, 1)
         const material_ = new THREE.MeshBasicMaterial({ color: color })
         super(geometry_, material_)
-        
+
         /** matter */
         this.#width = 1
         this.#height = 1

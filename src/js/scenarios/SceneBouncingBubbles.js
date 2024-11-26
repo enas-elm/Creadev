@@ -96,7 +96,7 @@ export default class SceneBouncingBubbles extends Scene2D {
     }
 
     addBubble(x, y) {
-        const bubble_ = new Bubble(this.context, x, y, this.params.radius )
+        const bubble_ = new Bubble(this.context, x, y, this.params.radius)
         this.bubbles.push(bubble_)
         return bubble_
     }
@@ -129,6 +129,16 @@ export default class SceneBouncingBubbles extends Scene2D {
                 b.draw()
             })
         }
+    }
+
+    removeBubble(bubble) {
+        // Dispose de la géométrie et du matériel (si utilisé dans Three.js)
+        if (bubble.context) {
+            bubble.context.clearRect(bubble.x - bubble.radius, bubble.y - bubble.radius, bubble.radius * 2, bubble.radius * 2);
+        }
+
+        // Supprime la bulle du tableau de bulles
+        this.bubbles = this.bubbles.filter(b => b !== bubble);
     }
 
     update() {
