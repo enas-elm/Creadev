@@ -3,17 +3,32 @@ import Scene2D from "../template/Scene2D"
 import { clamp, degToRad, distance2D, randomRange } from "../Utils/MathUtils"
 
 class Bubble {
-    constructor(context, x, y, radius) {
+    constructor(context, x, y, radius, color) {
         this.context = context
         this.x = x
         this.y = y
         this.radius = radius
 
+        if (color) {
+            this.color = color;
+        } else {
+            const colors = ['red', 'yellow', 'blue'];
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+        }
+
         this.time = new GlobalContext().time
 
         /** speed */
-        this.vx = randomRange(-200, 200)
-        this.vy = randomRange(-200, 200)
+        // this.vx = randomRange(-200, 200)
+        // this.vy = randomRange(-200, 200)
+
+
+
+        /** speed */
+        this.baseVx = randomRange(-200, 200); // Vitesse horizontale de base
+        this.baseVy = randomRange(-200, 200); // Vitesse verticale de base
+        this.vx = this.baseVx;
+        this.vy = this.baseVy;
 
         /** gravity */
         this.gx = 0
@@ -22,6 +37,8 @@ class Bubble {
 
     draw() {
         this.context.beginPath()
+        // this.context.fillStyle = this.color; 
+        this.context.strokeStyle = this.color;
         this.context.arc(this.x, this.y, this.radius, 0, degToRad(360))
         this.context.fill()
         this.context.stroke()
@@ -63,16 +80,69 @@ export default class SceneBouncingBubbles extends Scene2D {
             gStrength: 300
         }
         if (!!this.debugFolder) {
-            this.debugFolder.add(this.params, "threshold", 0, 200)
-            this.debugFolder.add(this.params, "radius", 0, 30, 0.1).name("Rayon").onChange(() => {
+            this.debugFolder.add(this.params, "threshold", 0, 200).name("Threshold")
+            this.debugFolder.add(this.params, "radius", 0, 30, 0.1).name("Radius").onChange(() => {
                 if (!!this.bubbles) {
                     this.bubbles.forEach(b => { b.radius = this.params.radius })
                 }
             })
-            this.debugFolder.add(this.params, "nBubbles", 3, 50).onFinishChange(() => {
+            this.debugFolder.add(this.params, "nBubbles", 3, 50).name('Bubble Number').onFinishChange(() => {
                 this.generateBubbles()
             })
-            this.debugFolder.add(this.params, "gStrength", 0, 400)
+            this.debugFolder.add(this.params, "gStrength", 0, 400).name("Gravity Strength")
+
+            this.debugFolder.add(this.params, "speed", -1, 1, 0.1).name("Speed").onChange(() => {
+                if (!!this.bubbles) {
+                    this.bubbles.forEach(b => {
+                        const speedFactor = Math.abs(this.params.speed); // Facteur d'accélération (0 à 1)
+                        const direction = Math.sign(this.params.speed); // Direction : -1, 0, ou 1
+
+                        if (direction === 0) {
+                            // Stopper les bulles
+                            b.vx = 0;
+                            b.vy = 0;
+                        } else {
+                            // Recalcule les vitesses à partir des valeurs initiales
+                            b.vx = direction * b.baseVx * speedFactor;
+                            b.vy = direction * b.baseVy * speedFactor;
+                        }
+                    });
+                }
+            });
+
+
+            // this.debugFolder.add(this.params, "speed", -1, 1, 0.1).name("Speed").onChange(() => {
+            //     if (!!this.bubbles) {
+            //         this.bubbles.forEach(b => {
+            //             // Ajustement des vitesses en fonction de la valeur de speed
+            //             const speedFactor = Math.abs(this.params.speed); // Facteur d'accélération (0 à 1)
+            //             const direction = Math.sign(this.params.speed); // Direction : -1 (reverse), 0 (stop), ou 1 (normal)
+
+            //             // Si speed est 0, on arrête tout
+            //             if (direction === 0) {
+            //                 b.vx = 0;
+            //                 b.vy = 0;
+            //             } else {
+            //                 // Ajustement de la vitesse avec direction et facteur
+            //                 b.vx = direction * Math.abs(b.vx) * speedFactor;
+            //                 b.vy = direction * Math.abs(b.vy) * speedFactor;
+            //             }
+            //         });
+            //     }
+            // });
+
+            // this.debugFolder.add(this.params, "speed", -1, 1, 0.1).name("Speed").onChange(() => {
+            //     if (!!this.bubbles) {
+            //         this.bubbles.forEach(b => {
+            //             // Ajustement des vitesses en fonction de la valeur de speed
+            //             const speedFactor = Math.abs(this.params.speed); // Facteur d'accélération
+            //             const direction = Math.sign(this.params.speed); // Direction : -1 (inversé), 0 (arrêt), ou 1 (normal)
+
+            //             b.vx = direction * Math.abs(b.vx) * speedFactor;
+            //             b.vy = direction * Math.abs(b.vy) * speedFactor;
+            //         });
+            //     }
+            // });
         }
 
         /** device orientation */
@@ -86,24 +156,28 @@ export default class SceneBouncingBubbles extends Scene2D {
 
     generateBubbles() {
         /** generate bubbles */
+        const colors = ['red', 'yellow', 'blue'];
         this.bubbles = []
         for (let i = 0; i < this.params.nBubbles; i++) {
             const x_ = this.width * Math.random()
             const y_ = this.height * Math.random()
-            const bubble_ = new Bubble(this.context, x_, y_, 5)
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+            const bubble_ = new Bubble(this.context, x_, y_, 5, randomColor)
             this.bubbles.push(bubble_)
         }
     }
 
-    addBubble(x, y) {
-        const bubble_ = new Bubble(this.context, x, y, this.params.radius)
+    addBubble(x, y, color) {
+
+        const bubble_ = new Bubble(this.context, x, y, this.params.radius, color)
         this.bubbles.push(bubble_)
         return bubble_
     }
 
     draw() {
         /** style */
-        this.context.strokeStyle = "white"
+        this.context.strokeStyle = this.color
         this.context.fillStyle = "black"
         this.context.lineWidth = 2
         this.context.lineCap = "round"
@@ -120,10 +194,12 @@ export default class SceneBouncingBubbles extends Scene2D {
                         this.context.moveTo(current_.x, current_.y)
                         this.context.lineTo(next_.x, next_.y)
                         this.context.stroke()
+                        this.context.strokeStyle = 'white'
                         this.context.closePath()
                     }
                 }
             }
+
 
             this.bubbles.forEach(b => {
                 b.draw()

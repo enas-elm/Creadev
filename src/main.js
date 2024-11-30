@@ -56,7 +56,7 @@ const update = () => {
     outScene1_up.forEach(bubbleToRemove => { scene1.removeBubble(bubbleToRemove) })
 
     outScene1_up.forEach(bubbleToBubble => {
-        const newBubble_ = scene3.addBubble(bubbleToBubble.x, scene1.height)
+        const newBubble_ = scene3.addBubble(bubbleToBubble.x, scene1.height, bubbleToBubble.color)
         newBubble_.vx = bubbleToBubble.vx
         newBubble_.vy = bubbleToBubble.vy
     })
@@ -67,11 +67,10 @@ const update = () => {
     outScene3_down.forEach(bubbleToRemove => { scene3.removeBubble(bubbleToRemove) })
 
     outScene3_down.forEach(bubbleToBubble => {
-        const newBubble_ = scene1.addBubble(bubbleToBubble.x, 0)
+        const newBubble_ = scene1.addBubble(bubbleToBubble.x, 0, bubbleToBubble.color)
         newBubble_.vx = bubbleToBubble.vx
         newBubble_.vy = bubbleToBubble.vy
     })
-
 
 
     // Scene 2 -> Scene 3
@@ -83,7 +82,7 @@ const update = () => {
 
     /** add new entities to corresponding scene */
     outScene2_down.forEach(cubeToBubble => {
-        const newBubble_ = scene3.addBubble(cubeToBubble.position.x + scene3.width / 2, 0)
+        const newBubble_ = scene3.addBubble(cubeToBubble.position.x + scene3.width / 2, 0, cubeToBubble.color)
         newBubble_.vy = Math.abs(newBubble_.vy)
         newBubble_.vx = Math.abs(newBubble_.vx)
     })
@@ -94,23 +93,11 @@ const update = () => {
     outScene2_up.forEach(cubeToRemove => { scene2.removeCube(cubeToRemove) })
 
     outScene2_up.forEach(cubeToBubble => {
-        const newBubble_ = scene1.addBubble(cubeToBubble.position.x + scene1.width / 2, scene1.height)
+        const newBubble_ = scene1.addBubble(cubeToBubble.position.x + scene3.width / 2, scene1.height, cubeToBubble.color)
         newBubble_.vy = Math.abs(newBubble_.vy)
         newBubble_.vx = Math.abs(newBubble_.vx)
     })
 
-    // scene2.cubes.forEach(cube => {
-    //     if (cube.position.y < -scene2.height / 2) {
-    //         scene2.removeCube(cube);
-
-    //         const newBubble_ = scene3.addBubble(cube.position.x + scene3.width / 2, 0);
-
-    //         if (newBubble_) {
-    //             newBubble_.vy = Math.abs(cube.vy);
-    //             newBubble_.vx = Math.abs(cube.vx);
-    //         }
-    //     }
-    // });
 
     // Scene 3 -> Scene 2
     const outScene3_up = scene3.bubbles.filter(b => { return b.y + 400 < scene3.height })
@@ -118,9 +105,9 @@ const update = () => {
     outScene3_up.forEach(bubbleToRemove => scene3.removeBubble(bubbleToRemove))
 
     outScene3_up.forEach(bubbleToCube => {
-        const newCube_ = scene2.addCube(bubbleToCube.x, -scene2.height / 2)
-        newCube_.vy = Math.abs(newCube_.vy)
-        newCube_.vx = Math.abs(newCube_.vx)
+        const x = bubbleToCube.x - scene2.width / 2;
+        const y = -scene2.height / 2;
+        const newCube_ = scene2.addCube(x, y, bubbleToCube.color);
     })
 
     // Scene 1 -> Scene 2
@@ -129,12 +116,10 @@ const update = () => {
     outScene1_down.forEach(bubbleToRemove => { scene1.removeBubble(bubbleToRemove) })
 
     outScene1_down.forEach(bubbleToCube => {
-        const x = bubbleToCube.x;
-        const y = scene2.height / 2 + 50;
-
-        const newCube = scene2.addCube(x, y);
-        // newCube.vy = Math.abs(newCube_.vy)
-        // newCube.vx = Math.abs(newCube_.vx)
+        const x = bubbleToCube.x - scene2.width / 2;
+        const y = scene2.height / 2;
+        // const y = scene2.height / 2 + 20;
+        const newCube_ = scene2.addCube(x, y, bubbleToCube.color);
     })
 
     // outScene1_down.forEach(bubbleToMove => {

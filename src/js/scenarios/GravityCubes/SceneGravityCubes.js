@@ -33,14 +33,15 @@ export default class SceneGravityCubes extends Scene3D {
         /** walls */
         this.wallLeft = new Wall('blue')
         this.wallRight = new Wall('blue')
+        this.wallTop = new Wall('red')
         this.wallBottom = new Wall('red')
-        this.add(this.wallLeft, this.wallRight, this.wallBottom)
+        this.add(this.wallLeft, this.wallRight, this.wallTop, this.wallBottom)
 
         /** cube */
         this.cubes = []
         const colors = ['red', 'yellow', 'blue']
-        for (let i = 0; i < 10; i++) {
-            const cube_ = new GravityCube(50, colors[i % colors.length])
+        for (let i = 0; i < 8; i++) {
+            const cube_ = new GravityCube(20, colors[i % colors.length])
             const x_ = randomRange(-this.width / 2, this.width / 2)
             const y_ = randomRange(-this.height / 2, this.height / 2)
             cube_.setPosition(x_, y_)
@@ -55,6 +56,7 @@ export default class SceneGravityCubes extends Scene3D {
         this.bodies = [
             this.wallLeft.body,
             this.wallRight.body,
+            this.wallTop.body,
             this.wallBottom.body,
             ...this.cubes.map(c => c.body)
         ]
@@ -70,11 +72,10 @@ export default class SceneGravityCubes extends Scene3D {
         this.resize()
     }
 
-    addCube(x, y) {
-        console.log(`Add cube (${x}, ${y})`);
+    addCube(x, y, color) {
+        const cube_ = new GravityCube(20, color)
 
-        const cube_ = new GravityCube(50, 'purple')
-        cube_.setPosition(x / 2, y)
+        cube_.setPosition(x, y)
         this.add(cube_)
         this.cubes.push(cube_)
         Composite.add(this.engine.world, cube_.body);
@@ -114,16 +115,24 @@ export default class SceneGravityCubes extends Scene3D {
         this.camera.bottom = -this.height / 2
 
         if (!!this.wallRight) {
+            // this.wallRight.setPosition(this.width / 2, 0)
+            // this.wallRight.setSize(vertical_wall_thickness, this.height)
+            console.log(-this.width / 2)
+
+            console.log(this.width / 2)
             this.wallRight.setPosition(this.width / 2, 0)
             this.wallRight.setSize(vertical_wall_thickness, this.height)
 
             this.wallLeft.setPosition(-this.width / 2, 0)
             this.wallLeft.setSize(vertical_wall_thickness, this.height)
 
-            this.wallBottom.setPosition(0, -this.height / 2)
+            this.wallTop.setPosition(-this.width / 6, this.height / 5)
+            this.wallTop.setSize(((this.width - vertical_wall_thickness) * 2) / 3, horizonal_wall_thickness)
+
+            this.wallBottom.setPosition(this.width / 6, -this.height / 5)
             // MODIF !!
             // this.wallBottom.setSize(this.width - vertical_wall_thickness, horizonal_wall_thickness)
-            this.wallBottom.setSize(100, horizonal_wall_thickness)
+            this.wallBottom.setSize(((this.width - vertical_wall_thickness) * 2) / 3, horizonal_wall_thickness)
 
         }
     }

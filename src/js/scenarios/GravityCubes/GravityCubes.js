@@ -12,6 +12,7 @@ export default class GravityCube extends THREE.Mesh {
         this.body = Bodies.rectangle(
             0, 0, size, size
         )
+        this.color = color;
     }
 
     setPosition(x, y) {
