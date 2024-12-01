@@ -3,7 +3,4 @@ export default {
     build: {
         outDir: '../dist'
     },
-    plugins: [
-        basicSsl()
-    ]
 }
