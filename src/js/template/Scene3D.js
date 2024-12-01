@@ -20,13 +20,14 @@ export default class Scene3D extends THREE.Scene {
         /** dom element */
         this.domElement = new DomElement(id)
         this.canvas = this.domElement.element
-        // this.context = this.canvas.getContext("3d")
 
         /** example */
         this.camera = new THREE.PerspectiveCamera( 75, this.domElement.aspectRatio, 0.1, 1000 )
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas, antialias: true
         })
+
+        this.renderer.setClearColor('#feeddd');
         
         /** init */
         this.resize()

@@ -31,15 +31,15 @@ export default class SceneGravityCubes extends Scene3D {
         this.camera.position.z = 1000
 
         /** walls */
-        this.wallLeft = new Wall('blue')
-        this.wallRight = new Wall('blue')
-        this.wallTop = new Wall('red')
-        this.wallBottom = new Wall('red')
+        this.wallLeft = new Wall('#feeddd')
+        this.wallRight = new Wall('#feeddd')
+        this.wallTop = new Wall('#e3b992')
+        this.wallBottom = new Wall('#e3b992')
         this.add(this.wallLeft, this.wallRight, this.wallTop, this.wallBottom)
 
         /** cube */
         this.cubes = []
-        const colors = ['red', 'yellow', 'blue']
+        const colors = ['#e57eda', '#75ad64', '#6361e3', "#f58a6b"]
         for (let i = 0; i < 8; i++) {
             const cube_ = new GravityCube(20, colors[i % colors.length])
             const x_ = randomRange(-this.width / 2, this.width / 2)
@@ -115,11 +115,6 @@ export default class SceneGravityCubes extends Scene3D {
         this.camera.bottom = -this.height / 2
 
         if (!!this.wallRight) {
-            // this.wallRight.setPosition(this.width / 2, 0)
-            // this.wallRight.setSize(vertical_wall_thickness, this.height)
-            console.log(-this.width / 2)
-
-            console.log(this.width / 2)
             this.wallRight.setPosition(this.width / 2, 0)
             this.wallRight.setSize(vertical_wall_thickness, this.height)
 
@@ -130,8 +125,6 @@ export default class SceneGravityCubes extends Scene3D {
             this.wallTop.setSize(((this.width - vertical_wall_thickness) * 2) / 3, horizonal_wall_thickness)
 
             this.wallBottom.setPosition(this.width / 6, -this.height / 5)
-            // MODIF !!
-            // this.wallBottom.setSize(this.width - vertical_wall_thickness, horizonal_wall_thickness)
             this.wallBottom.setSize(((this.width - vertical_wall_thickness) * 2) / 3, horizonal_wall_thickness)
 
         }
